@@ -1,27 +1,28 @@
 <?php
 /**
-* @file
-*
-* Ermahgerdifies node titles and bodies.
-*/
+ * @file
+ *
+ * Ermahgerdifies node titles and bodies.
+ */
 
 /**
  * Implements hook_node_view_alter().
  */
 function drermahgerd_node_view_alter(&$build) {
-    $path =  libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
-    require_once $path;
-    $e = new Ermahgerd\Ermahgerd();
-    $markup = $build['body'][0]['#markup'];
-    $d = _drermahgerd_translate_markup($e, $markup);
-    $build['body'][0]['#markup'] = $d;
-    $d = _drermahgerd_translate_plain($e, $build['#node']->title);
+  $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
+  require_once $path;
+  $e = new Ermahgerd\Ermahgerd();
+  $markup = $build['body'][0]['#markup'];
+  $d = _drermahgerd_translate_markup($e, $markup);
+  $build['body'][0]['#markup'] = $d;
+  $d = _drermahgerd_translate_plain($e, $build['#node']->title);
+  drupal_set_title($d);
+  if ('full' == $build['#view_mode']) {
     drupal_set_title($d);
-    if ('full' == $build['#view_mode']) {
-        drupal_set_title($d);
-    } else {  // assuming teaser mode here
-        $build['#node']->title = $d;
-    }
+  }
+  else { // assuming teaser mode here
+    $build['#node']->title = $d;
+  }
 }
 
 /**
@@ -33,24 +34,24 @@ function drermahgerd_node_view_alter(&$build) {
  */
 function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
 
-    // wrap the given markup in a div
-    $markup = "<div>" . $markup . "</div>";
-    $doc = new DOMDocument();
-    @$doc->loadHTML($markup);
-    $xpath = new DOMXPath($doc);
-    // process all text nodes
-    foreach ($xpath->query('//text()') as $textNode) {
-        $textNode->nodeValue = $e->translate($textNode->nodeValue);
-    }
-    // @see http://stackoverflow.com/a/6953808/307333
-    # remove <!DOCTYPE
-    $doc->removeChild($doc->firstChild);
-    # remove <html><body></body></html>
-    $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
-    $d = $doc->saveHTML();
+  // wrap the given markup in a div
+  $markup = "<div>" . $markup . "</div>";
+  $doc = new DOMDocument();
+  @$doc->loadHTML($markup);
+  $xpath = new DOMXPath($doc);
+  // process all text nodes
+  foreach ($xpath->query('//text()') as $textNode) {
+    $textNode->nodeValue = $e->translate($textNode->nodeValue);
+  }
+  // @see http://stackoverflow.com/a/6953808/307333
+  # remove <!DOCTYPE
+  $doc->removeChild($doc->firstChild);
+  # remove <html><body></body></html>
+  $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
+  $d = $doc->saveHTML();
 
-    $d = trim(substr($d, 5, strlen($d) - 12)); // snip off the wrapper-div and trim off any excess whitespace.
-    return $d;
+  $d = trim(substr($d, 5, strlen($d) - 12)); // snip off the wrapper-div and trim off any excess whitespace.
+  return $d;
 }
 
 /**
@@ -60,6 +61,6 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
  * @param string $text The plain text.
  * @return string The ermahgerdified text.
  */
-function _drermahgerd_translate_plain (Ermahgerd\Ermahgerd $e, $text) {
-    return $e->translate($text);
+function _drermahgerd_translate_plain(Ermahgerd\Ermahgerd $e, $text) {
+  return $e->translate($text);
 }
