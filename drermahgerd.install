@@ -20,7 +20,7 @@ function drermahgerd_requirements() {
   } else {
     $requirements['drermagehrd']['value'] = $t('Ermahgerd.php not found.');
     $requirements['drermagehrd']['severity'] = REQUIREMENT_ERROR;
-    $requirements['drermagehrd']['description'] = $t('Please download the latest Ermahgerd distribution from @url and extract it to your libraries folder.
+    $requirements['drermagehrd']['description'] = $t('Please download the latest PHP Ermahgerd distribution from @url and extract it to your libraries folder.
       Then rename the directory to "ermahgerd".', array(
       '@url' => 'https://github.com/WillSkates/ermahgerd/releases',
     ));
