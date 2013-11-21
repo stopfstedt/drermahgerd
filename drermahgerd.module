@@ -34,6 +34,9 @@ function drermahgerd_node_view_alter(&$build) {
  */
 function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
 
+  if ('' == trim($markup)) {
+    return $markup;
+  }
   // wrap the given markup in a div
   $markup = "<div>" . $markup . "</div>";
   $doc = new DOMDocument();
@@ -62,5 +65,8 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
  * @return string The ermahgerdified text.
  */
 function _drermahgerd_translate_plain(Ermahgerd\Ermahgerd $e, $text) {
+  if ('' == trim($text)) {
+    return $text;
+  }
   return $e->translate($text);
 }
