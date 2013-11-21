@@ -37,6 +37,14 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
   if ('' == trim($markup)) {
     return $markup;
   }
+
+  // cache lookup
+  $cache_key = _drermahgerd_generate_cache_key($markup);
+  $cache = cache_get($cache_key);
+  if ($cache) {
+    return $cache->data;
+  }
+
   // wrap the given markup in a div
   $markup = "<div>" . $markup . "</div>";
   $doc = new DOMDocument();
@@ -62,6 +70,10 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
   $d = $doc->saveHTML();
 
   $d = trim(substr(substr($d, 5), 0, -7)); // snip off the wrapper-div and trim off any excess whitespace.
+
+  // save to cache
+  cache_set($cache_key, $d);
+
   return $d;
 }
 
@@ -73,8 +85,31 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
  * @return string The ermahgerdified text.
  */
 function _drermahgerd_translate_plain(Ermahgerd\Ermahgerd $e, $text) {
+
+  $cache_key = _drermahgerd_generate_cache_key($text);
+  $cache = cache_get($cache_key);
+  if ($cache) {
+    return $cache->data;
+  }
+
   if ('' == trim($text)) {
     return $text;
   }
-  return $e->translate($text);
+
+  $d = $e->translate($text);
+
+  cache_set($cache_key, $d);
+
+  return $d;
+}
+
+/**
+ * Generates a unique cache key based on the given content.
+ *
+ * @param string $content The content.
+ * @return string
+ */
+function _drermahgerd_generate_cache_key($content) {
+  // key := prefix + content hash
+  return 'drermahgerd_content_' . md5($content);
 }
