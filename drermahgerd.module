@@ -61,7 +61,7 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
   $doc->replaceChild($doc->firstChild->firstChild->firstChild, $doc->firstChild);
   $d = $doc->saveHTML();
 
-  $d = trim(substr($d, 5, strlen($d) - 12)); // snip off the wrapper-div and trim off any excess whitespace.
+  $d = trim(substr(substr($d, 5), 0, -7)); // snip off the wrapper-div and trim off any excess whitespace.
   return $d;
 }
 
