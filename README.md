@@ -5,7 +5,7 @@ ERMAHGERD ERTS DRERPERL!
 ### Summary
 
 This Drupal module translates all node titles and node bodies in full page and teaser view mode
-to [ERMAHGERD speak](http://knowyourmeme.com/meme/ermahgerd/).
+to [ERMAHGERD speak](http://knowyourmeme.com/memes/ermahgerd/).
 
 ### Dependencies
 
