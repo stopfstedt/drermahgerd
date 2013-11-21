@@ -40,12 +40,20 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
   // wrap the given markup in a div
   $markup = "<div>" . $markup . "</div>";
   $doc = new DOMDocument();
-  @$doc->loadHTML($markup);
+
+  // hacky way of loading HTML as UTF-8
+  // @see http://www.php.net/manual/en/domdocument.loadhtml.php#95251
+  @$doc->loadHTML('<?xml encoding="UTF-8">' . $markup);
+  $doc->removeChild($doc->firstChild);
+  $doc->encoding = 'UTF-8';
+
   $xpath = new DOMXPath($doc);
   // process all text nodes
   foreach ($xpath->query('//text()') as $textNode) {
     $textNode->nodeValue = $e->translate($textNode->nodeValue);
   }
+
+
   // @see http://stackoverflow.com/a/6953808/307333
   # remove <!DOCTYPE
   $doc->removeChild($doc->firstChild);
