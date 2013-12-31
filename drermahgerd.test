@@ -1,0 +1,88 @@
+<?php
+/**
+ * @file
+ * Unit tests for the Drermahgerd module.
+ */
+
+
+/**
+ * Class DrermahgerdTranslateMarkupTestCase
+ */
+class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
+{
+  static public function getInfo()
+  {
+    return array(
+      'name' => 'Drermahgerd Translate Markup Test',
+      'description' => 'Unit tests the markup translation functionality.',
+      'group' => 'Drermahgerd',
+    );
+  }
+
+  public function setUp()
+  {
+    drupal_load('module', 'drermahgerd');
+    $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
+    require_once $path;
+    $this->_e = new Ermahgerd\Ermahgerd();
+    parent::setUp();
+  }
+
+  public function testEmptyTextTranslation()
+  {
+    // @todo implement
+  }
+
+  public function testTextTranslation()
+  {
+    // @todo implement
+  }
+}
+
+
+/**
+ * Class DrermahgerdTranslatePlaintextTestCase
+ */
+class DrermahgerdTranslatePlaintextTestCase extends DrupalUnitTestCase
+{
+  /**
+   * @var Ermahgerd\Ermahgerd
+   */
+  protected $_e;
+
+  static public function getInfo()
+  {
+    return array(
+      'name' => 'Drermahgerd Translate Plaintext Test',
+      'description' => 'Unit tests the plaintext translation functionality.',
+      'group' => 'Drermahgerd',
+    );
+  }
+
+  public function setUp()
+  {
+    drupal_load('module', 'drermahgerd');
+    $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
+    require_once $path;
+    $this->_e = new Ermahgerd\Ermahgerd();
+    parent::setUp();
+  }
+
+  public function testEmptyTextTranslation()
+  {
+    $text = '';
+    $actual = _drermahgerd_translate_plain($this->_e, $text);
+    $expected = '';
+    $message = 'An empty string should return an empty string';
+    $this->assertEqual($expected, $actual, $message);
+  }
+
+  public function testPlaintextTranslation()
+  {
+    $text = 'this is a test';
+    $actual = _drermahgerd_translate_plain($this->_e, $text);
+    $expected = 'THERS ERS A TERST';
+    $message = 'An given plain text string should be properly translated.';
+    $this->assertEqual($expected, $actual, $message);
+  }
+}
