@@ -10,6 +10,11 @@
  */
 class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
 {
+  /**
+   * @var Ermahgerd\Ermahgerd
+   */
+  protected $_e;
+  
   static public function getInfo()
   {
     return array(
@@ -30,12 +35,20 @@ class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
 
   public function testEmptyTextTranslation()
   {
-    // @todo implement
+    $text = '';
+    $actual = _drermahgerd_translate_markup($this->_e, $text);
+    $expected = '';
+    $message = 'An empty string should return an empty string';
+    $this->assertEqual($expected, $actual, $message);
   }
 
   public function testTextTranslation()
   {
-    // @todo implement
+    $text = '<p>this is a<em> test</em></p>';
+    $actual = _drermahgerd_translate_markup($this->_e, $text);
+    $expected = '<p>THERS ERS A<em> TERST</em></p>';
+    $message = "The text in a given markup string should be properly translated, whilst maintaining the document's structure.";
+    $this->assertEqual($expected, $actual, $message);
   }
 }
 
