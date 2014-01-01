@@ -30,19 +30,22 @@ function drermahgerd_node_view_alter(&$build) {
  *
  * @param \Ermahgerd\Ermahgerd $e The ermahgerd translator object.
  * @param string $markup The markup string.
+ * @param boolean $no_cache Pass TRUE to bypass module cache.
  * @return string Returns the ermahgerdified markup.
  */
-function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
+function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup, $no_cache = false) {
 
   if ('' == trim($markup)) {
     return $markup;
   }
 
-  // cache lookup
-  $cache_key = _drermahgerd_generate_cache_key($markup);
-  $cache = cache_get($cache_key);
-  if ($cache) {
-    return $cache->data;
+  if (! $no_cache) {
+    // cache lookup
+    $cache_key = _drermahgerd_generate_cache_key($markup);
+    $cache = cache_get($cache_key);
+    if ($cache) {
+      return $cache->data;
+    }
   }
 
   // wrap the given markup in a div
@@ -72,7 +75,9 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
   $d = trim(substr(substr($d, 5), 0, -7)); // snip off the wrapper-div and trim off any excess whitespace.
 
   // save to cache
-  cache_set($cache_key, $d);
+  if (! $no_cache) {
+    cache_set($cache_key, $d);
+  }
 
   return $d;
 }
@@ -82,24 +87,28 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup) {
  *
  * @param \Ermahgerd\Ermahgerd $e The ermahgerd translator object.
  * @param string $text The plain text.
+ * @param boolean $no_cache Pass TRUE to bypass module cache.
  * @return string The ermahgerdified text.
  */
-function _drermahgerd_translate_plain(Ermahgerd\Ermahgerd $e, $text) {
-
-  $cache_key = _drermahgerd_generate_cache_key($text);
-  $cache = cache_get($cache_key);
-  if ($cache) {
-    return $cache->data;
-  }
+function _drermahgerd_translate_plain(Ermahgerd\Ermahgerd $e, $text, $no_cache = false) {
 
   if ('' == trim($text)) {
     return $text;
   }
+  if (! $no_cache) {
+    $cache_key = _drermahgerd_generate_cache_key($text);
+    $cache = cache_get($cache_key);
+    if ($cache) {
+      return $cache->data;
+    }
+  }
+
 
   $d = $e->translate($text);
 
-  cache_set($cache_key, $d);
-
+  if (! $no_cache) {
+    cache_set($cache_key, $d);
+  }
   return $d;
 }
 
