@@ -40,7 +40,7 @@ before_script:
 
   # d/l and extract the Ermahgerd libs into libraries, then rename the directory
   - wget --quiet  --output-document sites/all/libraries/v1.0.3.tar.gz https://github.com/WillSkates/ermahgerd/archive/v1.0.3.tar.gz
-  - tar xvzf sites/all/libraries/latest.tar.gz --directory sites/all/libraries
+  - tar xvzf sites/all/libraries/v1.0.3.tar.gz --directory sites/all/libraries
   - mv sites/all/libraries/ermahgerd-1.0.3 sites/all/libraries/ermahgerd
   # remove the d/l'ed distro tarball
   - rm sites/all/libraries/v1.0.3.tar.gz
