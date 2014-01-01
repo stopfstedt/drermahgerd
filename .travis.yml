@@ -1,0 +1,61 @@
+language: php
+
+php:
+  - 5.4
+
+mysql:
+  database: travis_ci_drermahgerd_test
+  username: root
+  encoding: utf8
+
+before_script:
+
+  # navigate out of module directory to prevent blown stack by recursive module lookup
+  - cd ../..
+
+  # install drush
+  - pear channel-discover pear.drush.org
+  - pear install drush/drush
+  - phpenv rehash
+
+  # install php packages required for running a web server from drush on php 5.4
+  - sudo apt-get update > /dev/null
+  - sudo apt-get install -y --force-yes php5-cgi php5-mysql
+
+  # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
+  - mysql -e 'create database travis_ci_drermahgerd_test'
+  - php -d sendmail_path=`which true` `pear config-get php_dir`/drush/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/travis_ci_drermahgerd_test --enable=simpletest travis_ci_drermahgerd_test
+
+  # reference drermahgerd module in build site
+  - ln -s $(readlink -e $(cd -)) travis_ci_drermahgerd_test/drupal/sites/all/modules/drermahgerd
+
+  # cd into the build site's webroot
+  - cd travis_ci_drermahgerd_test/drupal
+
+  # dl and enable libraries module
+  - drush --yes dl libraries
+  - drush --yes en libraries
+
+  # dl and enable libraries module
+  - drush --yes dl bad_judgement
+  - drush --yes en bad_judgement
+
+  # create libraries directory
+  - mkdir -p sites/all/libraries
+
+  # d/l and extract the Ermahgerd libs into libraries, then rename the directory
+  - wget –quiet –output-document sites/all/libraries/v1.0.3.tar.gz https://github.com/WillSkates/ermahgerd/archive/v1.0.3.tar.gz
+  - tar xvzf sites/all/libraries/latest.tar.gz --directory sites/all/libraries
+  - mv sites/all/libraries/ermahgerd-1.0.3 sites/all/libraries/ermahgerd
+  # remove the d/l'ed distro tarball
+  - rm sites/all/libraries/v1.0.3.tar.gz
+
+  # enable the drermahgerd module
+  - drush --yes en drermahgerd
+
+  # start a web server on port 8080, run in the background; wait for initialization to complete.
+  - drush runserver 127.0.0.1:8080 &
+  - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
+
+script: drush test-run 'Drermahgerd' --uri=http://127.0.0.1:8080
+
