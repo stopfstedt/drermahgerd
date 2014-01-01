@@ -1,4 +1,4 @@
-## drermahgerd
+## drermahgerd [![Build Status](https://secure.travis-ci.org/stopfstedt/drermahgerd.png?branch=master)](http://travis-ci.org/stopfstedt/drermahgerd.js)
 
 ERMAHGERD ERTS DRERPERL!
 
@@ -21,7 +21,7 @@ to [ERMAHGERD speak](http://knowyourmeme.com/memes/ermahgerd/).
 4. Enable this module.
 
 
-[![Build Status](https://travis-ci.org/[stopfstedt]/[drermahgerd].png)](https://travis-ci.org/[stopfstedt]/[drermahgerd])
+
 
 
 
