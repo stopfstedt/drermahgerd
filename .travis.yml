@@ -37,7 +37,7 @@ before_script:
 
   # dl and enable libraries module
   - drush --yes dl bad_judgement
-  - drush --yes en bad_judgement 2>/dev/null
+  - drush --yes en bad_judgement
 
   # create libraries directory
   - mkdir -p sites/all/libraries
@@ -57,3 +57,7 @@ before_script:
   - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
 
 script: drush test-run 'Drermahgerd' --uri=http://127.0.0.1:8080
+
+matrix:
+  allow_failures:
+    - before_script: drush --yes en bad_judgement
