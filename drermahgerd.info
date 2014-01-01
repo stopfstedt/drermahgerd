@@ -3,7 +3,6 @@ description = ERMAHGERD ERST DRERPERL
 core = 7.x
 version = 7.x-0.1
 dependencies[] = libraries
-dependencies[] = bad_judgement
 php = 5.4
 
 files[] = drermahgerd.test

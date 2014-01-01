@@ -35,16 +35,12 @@ before_script:
   - drush --yes dl libraries
   - drush --yes en libraries
 
-  # dl and enable libraries module
-  - drush --yes dl bad_judgement
-  - drush --yes en bad_judgement 2>/dev/null
-
   # create libraries directory
   - mkdir -p sites/all/libraries
 
   # d/l and extract the Ermahgerd libs into libraries, then rename the directory
-  - wget -quiet  -output-document sites/all/libraries/v1.0.3.tar.gz https://github.com/WillSkates/ermahgerd/archive/v1.0.3.tar.gz
-  - tar xvzf sites/all/libraries/latest.tar.gz --directory sites/all/libraries
+  - wget --quiet  --output-document sites/all/libraries/v1.0.3.tar.gz https://github.com/WillSkates/ermahgerd/archive/v1.0.3.tar.gz
+  - tar xvzf sites/all/libraries/v1.0.3.tar.gz --directory sites/all/libraries
   - mv sites/all/libraries/ermahgerd-1.0.3 sites/all/libraries/ermahgerd
   # remove the d/l'ed distro tarball
   - rm sites/all/libraries/v1.0.3.tar.gz
