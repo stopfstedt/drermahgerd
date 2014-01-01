@@ -17,7 +17,7 @@ to [ERMAHGERD speak](http://knowyourmeme.com/memes/ermahgerd/).
 ### Installation
 
 1. Download and enable the [`libraries`](http://drupal.org/project/libraries) and [`bad_judgement`](http://drupal.org/project/bad_judgement) modules.
-2. Download the latest release of the [`PHP Ermahgerd`](https://github.com/WillSkates/ermahgerd/releases) library and extract it within your `sites/all/libraries` directory. Rename the created directory to `ehrmagerd`.
+2. Download the v1.0.3 release of the [`PHP Ermahgerd`](https://github.com/WillSkates/ermahgerd/releases/tag/v1.0.3) library and extract it within your `sites/all/libraries` directory. Rename the created directory to `ehrmagerd`.
 3. Verify that this file exists in this exact location within your Drupal web-root: `sites/all/libraries/ermahgerd/src/Ermahgerd/Ermahgerd.php`.
 4. Enable this module.
 
