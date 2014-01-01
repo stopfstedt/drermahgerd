@@ -1,0 +1,128 @@
+<?php
+/**
+ * @file
+ * Unit tests for the Drermahgerd module.
+ */
+
+/**
+ * Test case for the markup translation functionality in the Drermahgerd module.
+ *
+ * @see DrupalUnitTestCase
+ * @ingroup drermahgerd
+ */
+class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
+{
+  /**
+   * @var Ermahgerd\Ermahgerd
+   */
+  protected $_e;
+
+  /**
+   * Gives display information to the SimpleTest system.
+   *
+   * @return array A keyed array of information for SimpleTest to show.
+   */
+  static public function getInfo()
+  {
+    return array(
+      'name' => 'Drermahgerd Translate Markup Test',
+      'description' => 'Unit tests the markup translation functionality.',
+      'group' => 'Drermahgerd',
+    );
+  }
+
+  /**
+   * Set up the test environment.
+   *
+   * @see DrupalUnitTestCase::setUp()
+   */
+  public function setUp()
+  {
+    drupal_load('module', 'drermahgerd');
+    $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
+    require_once $path;
+    $this->_e = new Ermahgerd\Ermahgerd();
+    parent::setUp();
+  }
+
+  /**
+   * Calls <code>_drermahgerd_translate_markup()</code> and checks that it returns
+   * the correct result.
+   */
+  public function testTranslate()
+  {
+    $text = '';
+    $actual = _drermahgerd_translate_markup($this->_e, $text);
+    $expected = '';
+    $message = 'An empty string should return an empty string';
+    $this->assertEqual($expected, $actual, $message);
+
+    $text = '<p>this is a<em> test</em></p>';
+    $actual = _drermahgerd_translate_markup($this->_e, $text);
+    $expected = '<p>THERS ERS A<em> TERST</em></p>';
+    $message = "The text in a given markup string should be properly translated, whilst maintaining the document's structure.";
+    $this->assertEqual($expected, $actual, $message);
+  }
+}
+
+
+/**
+ * Test case for the plaintext translation functionality in the Drermahgerd module.
+ *
+ * @see DrupalUnitTestCase
+ * @ingroup drermahgerd
+ */
+class DrermahgerdTranslatePlaintextTestCase extends DrupalUnitTestCase
+{
+  /**
+   * @var Ermahgerd\Ermahgerd
+   */
+  protected $_e;
+
+  /**
+   * Gives display information to the SimpleTest system.
+   *
+   * @return array A keyed array of information for SimpleTest to show.
+   */
+  static public function getInfo()
+  {
+    return array(
+      'name' => 'Drermahgerd Translate Plaintext Test',
+      'description' => 'Unit tests the plaintext translation functionality.',
+      'group' => 'Drermahgerd',
+    );
+  }
+
+  /**
+   * Set up the test environment.
+   *
+   * @see DrupalUnitTestCase::setUp()
+   */
+  public function setUp()
+  {
+    drupal_load('module', 'drermahgerd');
+    $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
+    require_once $path;
+    $this->_e = new Ermahgerd\Ermahgerd();
+    parent::setUp();
+  }
+
+  /**
+   * Calls <code>_drermahgerd_translate_plain()</code> and checks that it returns
+   * the correct result.
+   */
+  public function testTranslate()
+  {
+    $text = '';
+    $actual = _drermahgerd_translate_plain($this->_e, $text);
+    $expected = '';
+    $message = 'An empty string should return an empty string';
+    $this->assertEqual($expected, $actual, $message);
+
+    $text = 'this is a test';
+    $actual = _drermahgerd_translate_plain($this->_e, $text);
+    $expected = 'THERS ERS A TERST';
+    $message = 'An given plaintext string should be properly translated.';
+    $this->assertEqual($expected, $actual, $message);
+  }
+}
