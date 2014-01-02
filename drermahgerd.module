@@ -41,7 +41,7 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup, $no_cach
 
   if (! $no_cache) {
     // cache lookup
-    $cache_key = _drermahgerd_generate_cache_key($markup);
+    $cache_key = _drermahgerd_generate_cache_key($markup, 'markup');
     $cache = cache_get($cache_key);
     if ($cache) {
       return $cache->data;
@@ -63,7 +63,6 @@ function _drermahgerd_translate_markup(Ermahgerd\Ermahgerd $e, $markup, $no_cach
   foreach ($xpath->query('//text()') as $textNode) {
     $textNode->nodeValue = $e->translate($textNode->nodeValue);
   }
-
 
   // @see http://stackoverflow.com/a/6953808/307333
   # remove <!DOCTYPE
@@ -96,13 +95,12 @@ function _drermahgerd_translate_plain(Ermahgerd\Ermahgerd $e, $text, $no_cache =
     return $text;
   }
   if (! $no_cache) {
-    $cache_key = _drermahgerd_generate_cache_key($text);
+    $cache_key = _drermahgerd_generate_cache_key($text, 'plain');
     $cache = cache_get($cache_key);
     if ($cache) {
       return $cache->data;
     }
   }
-
 
   $d = $e->translate($text);
 
@@ -113,12 +111,13 @@ function _drermahgerd_translate_plain(Ermahgerd\Ermahgerd $e, $text, $no_cache =
 }
 
 /**
- * Generates a unique cache key based on the given content.
+ * Generates a unique cache key based on the given content and prefix.
  *
  * @param string $content The content.
+ * @param string $prefix A cache key prefix, indicating the translation context (plaintext, markup) of the given content.
  * @return string
  */
-function _drermahgerd_generate_cache_key($content) {
-  // key := prefix + content hash
-  return 'drermahgerd_content_' . md5($content);
+function _drermahgerd_generate_cache_key($content, $prefix = '') {
+  // key := "drermahgerd_content_" + prefix + content hash
+  return 'drermahgerd_content_' . ltrim($prefix . '_' . md5($content), '_');
 }
