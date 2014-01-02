@@ -5,12 +5,12 @@
  */
 
 /**
- * Test case for the markup translation functionality in the Drermahgerd module.
+ * Test case for the functionality in the Drermahgerd module.
  *
  * @see DrupalUnitTestCase
  * @ingroup drermahgerd
  */
-class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
+class DrermahgerdTestCase extends DrupalUnitTestCase
 {
   /**
    * @var Ermahgerd\Ermahgerd
@@ -25,8 +25,8 @@ class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
   static public function getInfo()
   {
     return array(
-      'name' => 'Drermahgerd Translate Markup Test',
-      'description' => 'Unit tests the markup translation functionality.',
+      'name' => 'Drermahgerd Test',
+      'description' => "Unit tests the Drermahgerd module's functionality.",
       'group' => 'Drermahgerd',
     );
   }
@@ -49,7 +49,7 @@ class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
    * Calls <code>_drermahgerd_translate_markup()</code> and checks that it returns
    * the correct result.
    */
-  public function testTranslate()
+  public function testTranslateMarkup()
   {
     $text = '';
     $actual = _drermahgerd_translate_markup($this->_e, $text);
@@ -63,55 +63,12 @@ class DrermahgerdTranslateMarkupTestCase extends DrupalUnitTestCase
     $message = "The text in a given markup string should be properly translated, whilst maintaining the document's structure.";
     $this->assertEqual($expected, $actual, $message);
   }
-}
-
-
-/**
- * Test case for the plaintext translation functionality in the Drermahgerd module.
- *
- * @see DrupalUnitTestCase
- * @ingroup drermahgerd
- */
-class DrermahgerdTranslatePlaintextTestCase extends DrupalUnitTestCase
-{
-  /**
-   * @var Ermahgerd\Ermahgerd
-   */
-  protected $_e;
-
-  /**
-   * Gives display information to the SimpleTest system.
-   *
-   * @return array A keyed array of information for SimpleTest to show.
-   */
-  static public function getInfo()
-  {
-    return array(
-      'name' => 'Drermahgerd Translate Plaintext Test',
-      'description' => 'Unit tests the plaintext translation functionality.',
-      'group' => 'Drermahgerd',
-    );
-  }
-
-  /**
-   * Set up the test environment.
-   *
-   * @see DrupalUnitTestCase::setUp()
-   */
-  public function setUp()
-  {
-    drupal_load('module', 'drermahgerd');
-    $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
-    require_once $path;
-    $this->_e = new Ermahgerd\Ermahgerd();
-    parent::setUp();
-  }
 
   /**
    * Calls <code>_drermahgerd_translate_plain()</code> and checks that it returns
    * the correct result.
    */
-  public function testTranslate()
+  public function testTranslatePlaintext()
   {
     $text = '';
     $actual = _drermahgerd_translate_plain($this->_e, $text, true);
@@ -123,6 +80,29 @@ class DrermahgerdTranslatePlaintextTestCase extends DrupalUnitTestCase
     $actual = _drermahgerd_translate_plain($this->_e, $text);
     $expected = 'THERS ERS A TERST';
     $message = 'An given plaintext string should be properly translated.';
+
     $this->assertEqual($expected, $actual, $message);
   }
+
+  /**
+   * Calls <code>_drermahgerd_generate_cache_key()</code> and checks that it returns
+   * the correct result.
+   */
+  public function testCacheKeyGeneration()
+  {
+    $content  = 'this is a test';
+    $keyPlain = _drermahgerd_generate_cache_key($content, 'plain');
+    $keyMarkup = _drermahgerd_generate_cache_key($content, 'markup');
+
+    // test the key generation algorithm.
+    $expectedKeyPlain = 'drermahgerd_content_plain_' . md5($content);
+    $expectedKeyMarkup = 'drermahgerd_content_markup_' . md5($content);
+
+    $message = 'A cache key should be properly created from the given content.';
+
+    $this->assertEqual($expectedKeyPlain, $keyPlain, $message);
+    $this->assertEqual($expectedKeyMarkup, $keyMarkup, $message);
+  }
 }
+
+
