@@ -5,12 +5,12 @@
  */
 
 /**
- * Test case for the translation functionality in the Drermahgerd module.
+ * Test case for the functionality in the Drermahgerd module.
  *
  * @see DrupalUnitTestCase
  * @ingroup drermahgerd
  */
-class DrermahgerdTranslateTestCase extends DrupalUnitTestCase
+class DrermahgerdTestCase extends DrupalUnitTestCase
 {
   /**
    * @var Ermahgerd\Ermahgerd
@@ -25,8 +25,8 @@ class DrermahgerdTranslateTestCase extends DrupalUnitTestCase
   static public function getInfo()
   {
     return array(
-      'name' => 'Drermahgerd Translation Test',
-      'description' => "Unit tests the Drermahgerd module's translation functionality.",
+      'name' => 'Drermahgerd Test',
+      'description' => "Unit tests the Drermahgerd module's functionality.",
       'group' => 'Drermahgerd',
     );
   }
@@ -83,4 +83,26 @@ class DrermahgerdTranslateTestCase extends DrupalUnitTestCase
 
     $this->assertEqual($expected, $actual, $message);
   }
+
+  /**
+   * Calls <code>_drermahgerd_generate_cache_key()</code> and checks that it returns
+   * the correct result.
+   */
+  public function testCacheKeyGeneration()
+  {
+    $content  = 'this is a test';
+    $keyPlain = _drermahgerd_generate_cache_key($content, 'plain');
+    $keyMarkup = _drermahgerd_generate_cache_key($content, 'markup');
+
+    // test the key generation algorithm.
+    $expectedKeyPlain = 'drermahgerd_content_plain_' . md5($content);
+    $expectedKeyMarkup = 'drermahgerd_content_markup_' . md5($content);
+
+    $message = 'A cache key should be properly created from the given content.';
+
+    $this->assertEqual($expectedKeyPlain, $keyPlain, $message);
+    $this->assertEqual($expectedKeyMarkup, $keyMarkup, $message);
+  }
 }
+
+
