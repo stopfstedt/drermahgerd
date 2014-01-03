@@ -35,6 +35,10 @@ before_script:
   - drush --yes dl libraries
   - drush --yes en libraries
 
+    # dl and enable libraries module
+  - drush --yes dl bad_judgement
+  - drush --yes en bad_judgement || 0
+
   # create libraries directory
   - mkdir -p sites/all/libraries
 
