@@ -11,6 +11,7 @@ to [ERMAHGERD speak](http://knowyourmeme.com/memes/ermahgerd/).
 
 * PHP 5.4+ with `Dom` extension enabled.
 * The [`libraries`](http://drupal.org/project/libraries) module.
+* The [`bad_judgement`](http://drupal.org/project/bad_judgement) module.
 * The [`PHP Ehrmahgerd`](https://github.com/WillSkates/ermahgerd) library.
 
 ### Installation
