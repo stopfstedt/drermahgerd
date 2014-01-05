@@ -5,14 +5,16 @@
  */
 
 /**
- * Test case for the functionality in the Drermahgerd module.
+ * Test case for the translation functionality in the Drermahgerd module.
  *
  * @see DrupalUnitTestCase
  * @ingroup drermahgerd
  */
-class DrermahgerdTestCase extends DrupalUnitTestCase
+class DrermahgerdTranslationTestCase extends DrupalUnitTestCase
 {
   /**
+   * The translator instance.
+   *
    * @var Ermahgerd\Ermahgerd
    */
   protected $_e;
@@ -25,8 +27,8 @@ class DrermahgerdTestCase extends DrupalUnitTestCase
   static public function getInfo()
   {
     return array(
-      'name' => 'Drermahgerd Test',
-      'description' => "Unit tests the Drermahgerd module's functionality.",
+      'name' => 'Drermahgerd Translation Test',
+      'description' => "Unit tests the Drermahgerd module's translation functionality.",
       'group' => 'Drermahgerd',
     );
   }
@@ -38,11 +40,10 @@ class DrermahgerdTestCase extends DrupalUnitTestCase
    */
   public function setUp()
   {
+    drupal_load('module', 'libraries');
     drupal_load('module', 'drermahgerd');
-    $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
-    require_once $path;
-    $this->_e = new Ermahgerd\Ermahgerd();
     parent::setUp();
+
   }
 
   /**
@@ -51,14 +52,16 @@ class DrermahgerdTestCase extends DrupalUnitTestCase
    */
   public function testTranslateMarkup()
   {
+    $e = $this->_getTranslator();
+
     $text = '';
-    $actual = _drermahgerd_translate_markup($this->_e, $text);
+    $actual = _drermahgerd_translate_markup($e, $text);
     $expected = '';
     $message = 'An empty string should return an empty string';
     $this->assertEqual($expected, $actual, $message);
 
     $text = '<p>this is a<em> test</em></p>';
-    $actual = _drermahgerd_translate_markup($this->_e, $text, true);
+    $actual = _drermahgerd_translate_markup($e, $text, true);
     $expected = '<p>THERS ERS A<em> TERST</em></p>';
     $message = "The text in a given markup string should be properly translated, whilst maintaining the document's structure.";
     $this->assertEqual($expected, $actual, $message);
@@ -70,18 +73,78 @@ class DrermahgerdTestCase extends DrupalUnitTestCase
    */
   public function testTranslatePlaintext()
   {
+    $e = $this->_getTranslator();
+
     $text = '';
-    $actual = _drermahgerd_translate_plain($this->_e, $text, true);
+    $actual = _drermahgerd_translate_plain($e, $text, true);
     $expected = '';
     $message = 'An empty string should return an empty string';
     $this->assertEqual($expected, $actual, $message);
 
     $text = 'this is a test';
-    $actual = _drermahgerd_translate_plain($this->_e, $text);
+    $actual = _drermahgerd_translate_plain($e, $text);
     $expected = 'THERS ERS A TERST';
     $message = 'An given plaintext string should be properly translated.';
 
     $this->assertEqual($expected, $actual, $message);
+  }
+
+  /**
+   * Helper method.
+   * Lazy-loads and returns the translator instance.
+   * @return \Ermahgerd\Ermahgerd The translator object.
+   */
+  protected function _getTranslator()
+  {
+    if (! isset($this->_e)) {
+      // load the ermahgerd libs and instantiate a translator object.
+      $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
+      require_once $path;
+      $this->_e = new Ermahgerd\Ermahgerd();
+    }
+    return $this->_e;
+  }
+}
+
+/***
+ * Test case for the caching functionality in the Drermahgerd module.
+ *
+ * @see DrupalWebTestCase
+ * @ingroup drermahgerd
+ */
+class DrermahgerdCachingTestCase extends DrupalWebTestCase
+{
+  /**
+   * The translator instance.
+   *
+   * @var Ermahgerd\Ermahgerd
+   */
+  protected $_e;
+
+  /**
+   * Gives display information to the SimpleTest system.
+   *
+   * @return array A keyed array of information for SimpleTest to show.
+   */
+  static public function getInfo()
+  {
+    return array(
+      'name' => 'Drermahgerd Caching Test',
+      'description' => "Unit tests the Drermahgerd module's caching functionality.",
+      'group' => 'Drermahgerd',
+    );
+  }
+
+  /**
+   * Set up the test environment.
+   *
+   * @see DrupalWebTestCase::setUp()
+   */
+  public function setUp()
+  {
+    parent::setUp(array('libraries', 'bad_judgement', 'drermahgerd'));
+    // clear the cache before each test run.
+    cache_clear_all('drermahgerd_content_', 'cache', true);
   }
 
   /**
@@ -102,6 +165,82 @@ class DrermahgerdTestCase extends DrupalUnitTestCase
 
     $this->assertEqual($expectedKeyPlain, $keyPlain, $message);
     $this->assertEqual($expectedKeyMarkup, $keyMarkup, $message);
+  }
+
+  /**
+   * Verifies that translating content caches to the db by default.
+   */
+  public function testCaching ()
+  {
+    $content = 'this is a test';
+    $keyPlain = _drermahgerd_generate_cache_key($content, 'plain');
+    $keyMarkup = _drermahgerd_generate_cache_key($content, 'markup');
+
+    // assert that the cache is empty
+    $message =  'The cache should be empty pre-translation.';
+    $this->assertFalse(cache_get($keyPlain), $message);
+    $this->assertFalse(cache_get($keyMarkup), $message);
+
+    // translate the given content with caching on.
+    // this should cache the translated content.
+    $e = $this->_getTranslator();
+    $translatedPlain = _drermahgerd_translate_plain($e, $content);
+    $translatedMarkup = _drermahgerd_translate_markup($e, $content);
+
+    // assert that it contains a value for the given key
+    $message = 'The cache should contain a value post-translation.';
+    $cachedPlain = cache_get($keyPlain);
+    $cachedMarkup = cache_get($keyMarkup);
+    $this->assertNotIdentical(false, $cachedPlain, $message);
+    $this->assertNotIdentical(false, $cachedMarkup, $message);
+
+    //  assert that the correctly translated content is in the cache.
+    $message = 'The cache should contain the proper content post-translation.';
+    $this->assertEqual($cachedPlain->data, $translatedPlain, $message);
+    $this->assertEqual($cachedMarkup->data, $translatedMarkup, $message);
+  }
+
+  /**
+   * Verifies that translating content does not cache to the db if told not to do so.
+   */
+  public function testCachingOff()
+  {
+    $content = 'this is a test';
+    $keyPlain = _drermahgerd_generate_cache_key($content, 'plain');
+    $keyMarkup = _drermahgerd_generate_cache_key($content, 'markup');
+
+    // assert that the cache is empty
+    $message =  'The cache should be empty pre-translation.';
+    $this->assertFalse(cache_get($keyPlain), $message);
+    $this->assertFalse(cache_get($keyMarkup), $message);
+
+    // translate the given content with caching off.
+    // this should cache the translated content.
+    $e = $this->_getTranslator();
+    _drermahgerd_translate_plain($e, $content, true);
+    _drermahgerd_translate_markup($e, $content, true);
+
+
+    // assert that it contains no value for the given key
+    $message = 'The cache should not contain a value post-translation.';
+    $this->assertFalse(cache_get($keyPlain), $message);
+    $this->assertFalse(cache_get($keyMarkup), $message);
+  }
+
+  /**
+   * Helper method.
+   * Lazy-loads and returns the translator instance.
+   * @return \Ermahgerd\Ermahgerd The translator object.
+   */
+  protected function _getTranslator()
+  {
+    if (! isset($this->_e)) {
+      // load the dermahgerd libs and instantiate a translator object.
+      $path = libraries_get_path('ermahgerd') . '/src/Ermahgerd/Ermahgerd.php';
+      require_once $path;
+      $this->_e = new Ermahgerd\Ermahgerd();
+    }
+    return $this->_e;
   }
 }
 
