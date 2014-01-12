@@ -36,13 +36,11 @@ before_script:
   # cd into the build site's webroot
   - cd travis_ci_drermahgerd_test/drupal
 
-  # dl and enable libraries module
-  - drush --yes dl libraries
-  - drush --yes en libraries
+  # dl the libraries module
+  - drush dl libraries
 
-  # dl and enable bad_judgement module
-  - drush --yes dl bad_judgement
-  - drush --yes en bad_judgement || test true
+  # dl the  bad_judgement module
+  - drush dl bad_judgement
 
   # create libraries directory
   - mkdir -p sites/all/libraries
@@ -53,9 +51,6 @@ before_script:
   - mv sites/all/libraries/ermahgerd-1.0.3 sites/all/libraries/ermahgerd
   # remove the d/l'ed distro tarball
   - rm sites/all/libraries/v1.0.3.tar.gz
-
-  # enable the drermahgerd module
-  - drush --yes en drermahgerd
 
   # start a web server on port 8080, run in the background; wait for initialization to complete.
   - drush runserver 127.0.0.1:8080 &
