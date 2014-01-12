@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * Implements hook_requirements().
+ */
+function drermahgerd_requirements($phase) {
+  $requirements = array();
+  $t = get_t();
+
+  if ('runtime' == $phase) {
+    $requirements['drermagehrd']['title'] = $t('DRERMAHGERD');
+
+    $path = libraries_get_path('ermahgerd');
+
+    $file_path = $path . '/src/Ermahgerd/Ermahgerd.php' ;
+
+    if (file_exists($file_path)) {
+      $requirements['drermagehrd']['value'] = $t('Ermahgerd.php found in @path.', array(
+        '@path' => $file_path));
+      $requirements['drermagehrd']['severity'] = REQUIREMENT_OK;
+    } else {
+      $requirements['drermagehrd']['value'] = $t('Ermahgerd.php not found.');
+      $requirements['drermagehrd']['severity'] = REQUIREMENT_ERROR;
+      $requirements['drermagehrd']['description'] = $t('Please download the latest PHP Ermahgerd distribution from @url and extract it to your libraries folder.
+        Then rename the directory to "ermahgerd".', array(
+        '@url' => 'https://github.com/WillSkates/ermahgerd/releases',
+      ));
+    }
+  }
+  return $requirements;
+}
