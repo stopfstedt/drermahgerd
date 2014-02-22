@@ -6,4 +6,4 @@ dependencies[] = libraries
 dependencies[] = bad_judgement
 php = 5.4
 
-files[] = drermahgerd.test
+files[] = tests/drermahgerd.test
