@@ -1,0 +1,17 @@
+default:
+  extensions:
+    Behat\MinkExtension\Extension:
+      base_url: http://drermahgerd.local
+      default_session: goutte
+      javascript_session: selenium2
+      browser_name: "firefox"
+      goutte: ~
+      selenium2:
+        capabilities: { "browser": "firefox", "version": "26" }
+    Drupal\DrupalExtension\Extension:
+      blackbox: ~
+      api_driver: "drupal"
+      drush:
+        alias: "drermahgerd"
+      drupal:
+        drupal_root: "/var/www/sites/drermahgerd"
