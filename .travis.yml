@@ -24,6 +24,9 @@ install:
   - composer global require drush/drush:6.*
 
 before_script:
+  # substitute the "travis build dir" placeholder in the behat config with the actual path
+  - sed -i "s|%%TRAVIS_BUILD_DIR%%|$TRAVIS_BUILD_DIR|" behat.yml
+
   # navigate out of module directory to prevent blown stack by recursive module lookup
   - cd ../..
 
