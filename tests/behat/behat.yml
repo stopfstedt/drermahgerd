@@ -27,7 +27,6 @@ travis:
         base_url: http://127.0.0.1:8080
       Drupal\DrupalExtension\Extension:
         drupal:
-          # the placeholder token will be substituted with the value of the $TRAVIS_BUILD_DIR environment variable during build-time.
-          # see: http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-          drupal_root: "%%TRAVIS_BUILD_DIR%%/travis_ci_drermahgerd_test/drupal"
+          # the placeholder token will be substituted with the actual path during build-time.
+          drupal_root: "%%DRUPAL_ROOT%%"
 

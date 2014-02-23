@@ -24,8 +24,6 @@ install:
   - composer global require drush/drush:6.*
 
 before_script:
-  # substitute the "travis build dir" placeholder in the behat config with the actual path
-  - sed -i "s|%%TRAVIS_BUILD_DIR%%|$TRAVIS_BUILD_DIR|" tests/behat/behat.yml
 
   # navigate out of module directory to prevent blown stack by recursive module lookup
   - cd ../..
@@ -41,6 +39,10 @@ before_script:
 
   # cd into the build site's webroot
   - cd travis_ci_drermahgerd_test/drupal
+
+  # substitute the placeholder token with the path to the current working directory in the behat configuration
+  - sed -i "s|%%DRUPAL_ROOT%%|$PWD|" $TRAVIS_BUILD_DIR/tests/behat/behat.yml
+
 
   # dl and enable libraries module
   - drush --yes dl libraries
