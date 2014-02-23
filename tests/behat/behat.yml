@@ -20,3 +20,13 @@ browser:
   extensions:
     Behat\MinkExtension\Extension:
       default_session: selenium2
+
+travis:
+    extensions:
+      Behat\MinkExtension\Extension:
+        base_url: http://127.0.0.1:8080
+      Drupal\DrupalExtension\Extension:
+        drupal:
+          # this is hokey, find a better way of defining the build dir [ST 2014/02/22]
+          drupal_root: "/home/travis/travis_ci_drermahgerd_test/drupal"
+
