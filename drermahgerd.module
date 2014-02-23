@@ -13,10 +13,11 @@ function drermahgerd_node_view_alter(&$build) {
   require_once $path;
   $e = new Ermahgerd\Ermahgerd();
   $markup = $build['body'][0]['#markup'];
-  $d = _drermahgerd_translate_markup($e, $markup);
-  $build['body'][0]['#markup'] = $d;
+  if ($markup) {
+    $d = _drermahgerd_translate_markup($e, $markup);
+    $build['body'][0]['#markup'] = $d;
+  }
   $d = _drermahgerd_translate_plain($e, $build['#node']->title);
-  drupal_set_title($d);
   if ('full' == $build['#view_mode']) {
     drupal_set_title($d);
   }
