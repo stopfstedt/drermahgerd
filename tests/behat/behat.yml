@@ -15,3 +15,8 @@ default:
         alias: "drermahgerd"
       drupal:
         drupal_root: "/var/www/sites/drermahgerd"
+
+browser:
+  extensions:
+    Behat\MinkExtension\Extension:
+      default_session: selenium2
