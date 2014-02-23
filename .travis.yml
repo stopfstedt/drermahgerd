@@ -31,7 +31,7 @@ before_script:
   - mysql -e 'create database travis_ci_drermahgerd_test'
 
   # create new site, stubbing sendmail path with true to prevent delivery errors and manually resolving drush path
-  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes core-quick-drupal --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/travis_ci_drermahgerd_test --enable=simpletest travis_ci_drermahgerd_test
+  - php -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes core-quick-drupal --profile=standard --no-server --db-url=mysql://root:@127.0.0.1/travis_ci_drermahgerd_test --enable=simpletest travis_ci_drermahgerd_test
 
   # reference drermahgerd module in build site
   - ln -s $(readlink -e $(cd -)) travis_ci_drermahgerd_test/drupal/sites/all/modules/drermahgerd
@@ -60,8 +60,18 @@ before_script:
   # enable the drermahgerd module
   - drush --yes en drermahgerd
 
+  # install Behat
+  - composer install -d $TRAVIS_BUILD_DIR/tests/behat
+
   # start a web server on port 8080, run in the background; wait for initialization to complete.
   - drush runserver 127.0.0.1:8080 &
   - until netstat -an 2>/dev/null | grep '8080.*LISTEN'; do true; done
 
-script: drush test-run 'Drermahgerd' --uri=http://127.0.0.1:8080
+  # check site status
+  - drush status
+
+script:
+  # run SimpleTest tests
+  - drush test-run 'Drermahgerd' --uri=http://127.0.0.1:8080
+  # run Behat tests
+  - "(cd $TRAVIS_BUILD_DIR/tests/behat && bin/behat -p travis)"
