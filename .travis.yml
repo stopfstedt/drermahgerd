@@ -71,4 +71,4 @@ script:
   # run SimpleTest tests
   - drush test-run 'Drermahgerd' --uri=http://127.0.0.1:8080
   # run Behat tests
-  - "(cd $TRAVIS_BUILD_DIR && bin/behat -p travis)"
+  - "(cd $TRAVIS_BUILD_DIR/tests/behat && bin/behat -p travis)"
