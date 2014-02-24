@@ -1,4 +1,4 @@
-## drermahgerd [![Build Status](https://secure.travis-ci.org/stopfstedt/drermahgerd.png?branch=master)](http://travis-ci.org/stopfstedt/drermahgerd)
+## drermahgerd [![Build Status](https://secure.travis-ci.org/stopfstedt/drermahgerd.png?branch=master)](http://travis-ci.org/stopfstedt/drermahgerd) [![Selenium Test Status](https://saucelabs.com/buildstatus/stopfstedt)](https://saucelabs.com/u/stopfstedt)
 
 ERMAHGERD ERTS DRERPERL!
 
