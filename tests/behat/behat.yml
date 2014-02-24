@@ -30,3 +30,18 @@ travis:
           # the placeholder token will be substituted with the actual path during build-time.
           drupal_root: "%%DRUPAL_ROOT%%"
 
+sauce:
+  extensions:
+        Behat\MinkExtension\Extension:
+            base_url: http://127.0.0.1:8080
+            default_session: saucelabs
+            javascript_session: saucelabs
+            saucelabs:
+                browser: "firefox"
+                capabilities:
+                    platform: "Linux"
+                    version: 26
+        Drupal\DrupalExtension\Extension:
+          drupal:
+            drupal_root: "%%DRUPAL_ROOT%%"
+
