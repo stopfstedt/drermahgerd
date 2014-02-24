@@ -3,6 +3,12 @@ language: php
 php:
   - 5.4
 
+env:
+  global:
+     # env variables for Sauce credentials, see https://saucelabs.com/opensource/travis
+     - secure: "laNMU2lytzb4CuchEDy8JdRQep2Zofo2iDd6xfgPBRDURiDrmsfQM5Dk4YhMVY6DYwjzmGBVh1Bk6MlBzIde+gPx2mPJHOp8uvMkStg1SC0jTH0i/7W3GogcfQxFpiMLmL8xOmnzNg6zBLvY8AeO3ZsVLTY+BoYV/73LDu5ruhU="
+     - secure: "d4czTWVq7MJxBvWet+7MMjsb+gy5vXq9loHAGZPXfR7qkc4RwkTNmCC4t1JDfbUuUj9u9mU545AttpTfQKks38ykevoOImCGZx5BnkrkDfPwCKDoZSEj96pQ/sEU6WuBmqUa4oStOqIglXChnLaX+QueSEZj3Y3qzey7h4ONeOA="
+
 mysql:
   database: travis_ci_drermahgerd_test
   username: root
@@ -10,6 +16,9 @@ mysql:
 
 before_install:
   - sudo apt-get update > /dev/null
+
+  # Set up Sauce Connect if we have a Sauce username set
+  - if [ "$SAUCE_USERNAME" ] ; then (curl -L https://gist.githubusercontent.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash); fi
 
 install:
   # install php packages required for running a web server from drush on php 5.4
@@ -77,5 +86,9 @@ before_script:
 script:
   # run SimpleTest tests
   - drush test-run 'Drermahgerd' --uri=http://127.0.0.1:8080
+
   # run Behat tests
   - "(cd $TRAVIS_BUILD_DIR/tests/behat && bin/behat -p travis)"
+
+  # Run Behat tests on GUI browsers via Sauce
+  - if [ "$SAUCE_USERNAME" ] ; then (cd $TRAVIS_BUILD_DIR/tests/behat && bin/behat -p sauce); fi
