@@ -7,7 +7,7 @@ default:
       browser_name: "firefox"
       goutte: ~
       selenium2:
-        capabilities: { "browser": "firefox", "version": "26" }
+        capabilities: { "browser": "firefox", "version": "27" }
     Drupal\DrupalExtension\Extension:
       blackbox: ~
       api_driver: "drupal"
@@ -40,7 +40,7 @@ sauce:
                 browser: "firefox"
                 capabilities:
                     platform: "Linux"
-                    version: 26
+                    version: 27
         Drupal\DrupalExtension\Extension:
           drupal:
             drupal_root: "%%DRUPAL_ROOT%%"
